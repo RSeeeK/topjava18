@@ -15,12 +15,12 @@ public class MealDAOInMemoryImpl implements MealDAO {
 
     static {
         meals = new ConcurrentSkipListMap<>();
-        meals.put(1L, new Meal(2L, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
-        meals.put(2L, new Meal(3L, LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
-        meals.put(3L, new Meal(4L, LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
-        meals.put(4L, new Meal(5L, LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
-        meals.put(6L, new Meal(6L, LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
-        meals.put(5L, new Meal(7L, LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
+        meals.put(1L, new Meal(1L, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
+        meals.put(2L, new Meal(2L, LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
+        meals.put(3L, new Meal(3L, LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
+        meals.put(4L, new Meal(4L, LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
+        meals.put(5L, new Meal(5L, LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
+        meals.put(6L, new Meal(6L, LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
     }
 
     @Override
@@ -28,6 +28,7 @@ public class MealDAOInMemoryImpl implements MealDAO {
         Long id = 1L;
         if (meals.size() > 0) {
             id = meals.lastEntry().getValue().getId();
+            meal.setId(++id);
         }
         meals.put(id, meal);
     }

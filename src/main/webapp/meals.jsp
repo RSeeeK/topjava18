@@ -9,7 +9,9 @@
         <h3><a href="index.html">Home</a></h3>
         <hr>
         <h2>Meals</h2>
-        <table>
+        <br/>
+        <a href="meals?action=add">Add new...</a>
+        <table border="1">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -17,6 +19,7 @@
                     <th>Description</th>
                     <th>Calories</th>
                     <th>Excess</th>
+                    <th colspan=2>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,6 +30,8 @@
                     <td><c:out value="${entry.description}" /></td>
                     <td><c:out value="${entry.calories}" /></td>
                     <td><c:out value="${entry.excess}" /></td>
+                    <td><a href="meals?action=edit&id=<c:out value="${entry.id}"/>">Edit</a></td>
+                    <td><a href="meals?action=delete&id=<c:out value="${entry.id}"/>">Delete</a></td>
                 </tr>
                 </c:forEach>
             </tbody>
