@@ -22,32 +22,55 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
 
-    private static final MealDAO mealDAO = new MealDAOInMemoryImpl();
+    private MealDAO mealDAO;
 
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
+    public void init() throws ServletException {
+        mealDAO = new MealDAOInMemoryImpl();
+    }
 
-        if (action == null || Actions.valueOf(action) == Actions.list) {
-            List<MealTo> mealsList = MealsUtil.getFiltered(mealDAO.getAll(),
-                    LocalTime.MIN,
-                    LocalTime.MAX,
-                    MealsUtil.getDefaultCaloriesPerDay());
-            request.setAttribute("mealsList", mealsList);
-            request.setAttribute("df", dateFormatter);
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
-        } else if (Actions.valueOf(action) == Actions.delete) {
-            mealDAO.remove(mealDAO.getById(Long.parseLong(request.getParameter("id"))));
-            response.sendRedirect("meals");
-        } else if (Actions.valueOf(action) == Actions.edit) {
-            Meal meal = mealDAO.getById(Long.parseLong(request.getParameter("id")));
-            request.setAttribute("meal", meal);
-            request.getRequestDispatcher("/meal.jsp").forward(request, response);
-        } else if (Actions.valueOf(action) == Actions.add) {
-            request.setAttribute("meal", new Meal(LocalDateTime.now(), "", 0));
-            request.getRequestDispatcher("/meal.jsp").forward(request, response);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String actionParam = request.getParameter("action");
+
+        Actions action = (actionParam == null || actionParam.isEmpty()) ? Actions.empty: Actions.valueOf(actionParam);
+
+        switch (action) {
+            case empty:
+            case list: {
+                log.debug("list meals");
+                List<MealTo> mealsList = MealsUtil.getFiltered(mealDAO.getAll(),
+                        LocalTime.MIN,
+                        LocalTime.MAX,
+                        MealsUtil.getDefaultCaloriesPerDay());
+                request.setAttribute("mealsList", mealsList);
+                request.setAttribute("df", dateFormatter);
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
+            }
+            case delete: {
+                String idParameter = request.getParameter("id");
+                mealDAO.remove(Long.parseLong(idParameter));
+                log.debug("remove meal with id " + idParameter);
+                response.sendRedirect("meals");
+                break;
+            }
+            case edit: {
+                String idParameter = request.getParameter("id");
+                Meal meal = mealDAO.getById(Long.parseLong(idParameter));
+                log.debug("edit meal with id: " + idParameter);
+                request.setAttribute("meal", meal);
+                request.getRequestDispatcher("/meal.jsp").forward(request, response);
+                break;
+            }
+            case add: {
+                log.debug("add new meal");
+                request.setAttribute("meal", new Meal(LocalDateTime.now(), "", 0));
+                request.getRequestDispatcher("/meal.jsp").forward(request, response);
+                break;
+            }
         }
 
     }

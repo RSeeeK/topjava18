@@ -11,9 +11,6 @@
         <h2>Meal</h2>
         <br/>
         <form method="POST" action='meals' name="formSaveMeal">
-            Meal ID:    <input type="text" readonly="readonly" name="id"
-                             value="<c:out value="${meal.id}" />"/>
-            <br/>
             Description:<input
                 type="text" name="description"
                 value="<c:out value="${meal.description}" />"/>
@@ -25,6 +22,9 @@
             Date:        <input
                 type="datetime-local" name="dateTime"
                 value="<c:out value="${meal.dateTime}" />"/>
+            <br/>
+            <input type="hidden" readonly="readonly" name="id"
+                   value="<c:out value="${meal.id}" />"/>
             <br/>
             <input type="submit" value="Save" />
         </form>

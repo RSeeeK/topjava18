@@ -4,5 +4,6 @@ public enum Actions {
     delete,
     edit,
     list,
-    add
+    add,
+    empty
 }
