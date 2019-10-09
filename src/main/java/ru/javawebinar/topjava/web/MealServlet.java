@@ -22,9 +22,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
 
-    private MealDAO mealDAO;
-
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");
+
+    private MealDAO mealDAO;
 
     @Override
     public void init() throws ServletException {

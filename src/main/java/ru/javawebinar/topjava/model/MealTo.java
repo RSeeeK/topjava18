@@ -9,19 +9,9 @@ public class MealTo {
 
     private final int calories;
 
-//    private final Supplier<Boolean> excess;
-//    private final AtomicBoolean excess;
     private final boolean excess;
 
     private final Long id;
-
-    public MealTo(LocalDateTime dateTime, String description, int calories, boolean excess) {
-        this.dateTime = dateTime;
-        this.description = description;
-        this.calories = calories;
-        this.excess = excess;
-        this.id = null;
-    }
 
     public MealTo(Long id, LocalDateTime dateTime, String description, int calories, boolean excess) {
         this.dateTime = dateTime;
