@@ -25,7 +25,7 @@ public class MealService {
     }
 
     public Meal create(Meal meal, Integer userId) {
-        return repository.save(meal, userId);
+        return checkNotFound(repository.save(meal, userId), "userId=" + meal.getUserId() + ", access denied.");
     }
 
     public void delete(int id, Integer userId) throws NotFoundException {
