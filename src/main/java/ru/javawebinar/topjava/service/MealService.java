@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,8 @@ public class MealService {
         this.repository = repository;
     }
 
-    public Meal create(Meal meal, Integer userId) {
-        return checkNotFound(repository.save(meal, userId), "userId=" + meal.getUserId() + ", access denied.");
+    public Meal create(Meal meal) {
+        return repository.save(meal);
     }
 
     public void delete(int id, Integer userId) throws NotFoundException {
@@ -40,7 +41,9 @@ public class MealService {
         return new ArrayList<>(repository.getAll(userId));
     }
 
-    public void update(Meal meal, Integer userId) throws NotFoundException {
-        checkNotFoundWithId(repository.save(meal, userId), meal.getId());
+    public void update(Meal meal) throws NotFoundException {
+        if (meal.getUserId().equals(SecurityUtil.authUserId())) {
+            checkNotFoundWithId(repository.save(meal), meal.getId());
+        }
     }
 }
