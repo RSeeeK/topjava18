@@ -42,8 +42,6 @@ public class MealService {
     }
 
     public void update(Meal meal) throws NotFoundException {
-        if (meal.getUserId().equals(SecurityUtil.authUserId())) {
-            checkNotFoundWithId(repository.save(meal), meal.getId());
-        }
+        checkNotFoundWithId(repository.save(meal), meal.getId());
     }
 }

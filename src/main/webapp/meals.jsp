@@ -20,6 +20,35 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <hr/>
+    <form id="filter" method="post">
+        <div>
+            <div>
+                <label for="startDate">От даты</label>
+                <input type="date" name="startDate" id="startDate">
+            </div>
+            <div>
+                <label for="endDate">До даты</label>
+                <input type="date" name="endDate" id="endDate">
+            </div>
+            <div>
+                <label for="startTime">От времени</label>
+                <input type="time" name="startTime" id="startTime">
+            </div>
+            <div>
+                <label for="endTime">До времени</label>
+                <input type="time" name="endTime" id="endTime">
+            </div>
+        </div>
+        <div>
+            <button type="reset" onclick="">
+                Отменить
+            </button>
+            <button type="submit">
+                Отфильтровать
+            </button>
+        </div>
+    </form>
+    <br>
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>

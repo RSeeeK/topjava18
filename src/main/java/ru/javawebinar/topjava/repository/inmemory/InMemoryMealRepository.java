@@ -31,6 +31,7 @@ public class InMemoryMealRepository implements MealRepository {
             getByUserId(meal.getUserId()).put(meal.getId(), meal);
             return meal;
         }
+        //TODO: Сделать проверку "анти Вася", убедиться что ид еды не принадлежит другому пользователю.
         // treat case: update, but not present in storage
         return getByUserId(meal.getUserId()).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
@@ -59,7 +60,7 @@ public class InMemoryMealRepository implements MealRepository {
                         (endDate == null || endDate.compareTo(meal.getDate()) < 0) &
                         (startTime == null || startTime.compareTo(meal.getTime()) > 0) &
                         (startTime == null || startTime.compareTo(meal.getTime()) < 0))
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                .sorted(Comparator.comparing(Meal::getDateTime, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
     }
 
