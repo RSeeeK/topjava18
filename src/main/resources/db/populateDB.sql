@@ -13,7 +13,19 @@ INSERT INTO user_roles (role, user_id) VALUES
 DELETE FROM meals;
 
 INSERT INTO meals (user_id, date_time, description, calories) VALUES
-    (100000, '2019.10.20 22:40:10', 'Пользователь поужинал', 1500);
+    (100000, '2019.10.20 08:30:00', 'Пользователь позавтракал', 500);
 
 INSERT INTO meals (user_id, date_time, description, calories) VALUES
-    (100001, '2019.10.20 22:40:25', 'Админ пожрал', 1200);
+    (100000, '2019.10.20 14:30:00', 'Пользователь пообедал', 1000);
+
+INSERT INTO meals (user_id, date_time, description, calories) VALUES
+    (100000, '2019.10.20 21:30:10', 'Пользователь поужинал', 500);
+
+INSERT INTO meals (user_id, date_time, description, calories) VALUES
+    (100001, '2019.10.20 12:00:00', 'Админ позавтракал', 1500);
+
+INSERT INTO meals (user_id, date_time, description, calories) VALUES
+    (100001, '2019.10.20 18:00:00', 'Админ пообедал', 2000);
+
+INSERT INTO meals (user_id, date_time, description, calories) VALUES
+    (100001, '2019.10.20 22:00:00', 'Админ поужинал', 2500);
