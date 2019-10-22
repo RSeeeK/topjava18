@@ -14,20 +14,14 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
-import static org.assertj.core.api.Assertions.assertThat;
-
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-web.xml",
-        "classpath:spring/spring-service.xml",
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
@@ -45,21 +39,20 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        assertThat(service.get(USER_MEAL_BREAKFAST.getId(), USER_ID)).isEqualToComparingFieldByField(USER_MEAL_BREAKFAST);
+        assertMatch(service.get(USER_MEAL_BREAKFAST.getId(), USER_ID), USER_MEAL_BREAKFAST);
     }
 
     @Test
     public void delete() {
         service.delete(ADMIN_MEAL_BREAKFAST.getId(), ADMIN_ID);
-        assertThat(service.getAll(ADMIN_ID)).usingFieldByFieldElementComparator()
-                .isEqualTo(Arrays.asList(ADMIN_MEAL_DINNER, ADMIN_MEAL_LUNCH));
+        assertMatch(service.getAll(ADMIN_ID), ADMIN_MEAL_DINNER, ADMIN_MEAL_LUNCH);
     }
 
     @Test
     public void update() {
         ADMIN_MEAL_LUNCH.setCalories(2500);
         service.update(ADMIN_MEAL_LUNCH, ADMIN_ID);
-        assertThat(service.get(ADMIN_MEAL_LUNCH.getId(), ADMIN_ID)).isEqualToComparingFieldByField(ADMIN_MEAL_LUNCH_UPDATED);
+        assertMatch(service.get(ADMIN_MEAL_LUNCH.getId(), ADMIN_ID), ADMIN_MEAL_LUNCH_UPDATED);
     }
 
     @Test(expected = NotFoundException.class)
@@ -80,15 +73,13 @@ public class MealServiceTest {
     @Test
     public void getBetweenDates() {
         List<Meal> betweenDate = service.getBetweenDates(LocalDate.of(2019,10,20),LocalDate.of(2019,10,20), USER_ID);
-        assertThat(betweenDate).usingFieldByFieldElementComparator()
-                .isEqualTo(Arrays.asList(USER_MEAL_DINNER, USER_MEAL_LUNCH, USER_MEAL_BREAKFAST));
+        assertMatch(betweenDate, USER_MEAL_DINNER, USER_MEAL_LUNCH, USER_MEAL_BREAKFAST);
     }
 
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(ADMIN_ID);
-        assertThat(all).usingFieldByFieldElementComparator()
-                .isEqualTo(Arrays.asList(ADMIN_MEAL_DINNER, ADMIN_MEAL_LUNCH, ADMIN_MEAL_BREAKFAST));
+        assertMatch(all, ADMIN_MEAL_DINNER, ADMIN_MEAL_LUNCH, ADMIN_MEAL_BREAKFAST);
     }
 
     @Test
@@ -96,8 +87,7 @@ public class MealServiceTest {
         Meal newMeal = new Meal(LocalDateTime.of(2019,10,23,23, 45, 0), "Пользователь еще поужинал", 2000);
         Meal created = service.create(newMeal, USER_ID);
         newMeal.setId(created.getId());
-        assertThat(service.getAll(USER_ID)).usingFieldByFieldElementComparator()
-                .isEqualTo(Arrays.asList(newMeal, USER_MEAL_DINNER, USER_MEAL_LUNCH, USER_MEAL_BREAKFAST));
+        assertMatch(service.getAll(USER_ID), newMeal, USER_MEAL_DINNER, USER_MEAL_LUNCH, USER_MEAL_BREAKFAST);
     }
 
     @Test(expected = DuplicateKeyException.class)

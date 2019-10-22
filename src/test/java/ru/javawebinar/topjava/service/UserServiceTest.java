@@ -21,8 +21,6 @@ import static ru.javawebinar.topjava.UserTestData.*;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-web.xml",
-        "classpath:spring/spring-service.xml",
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
