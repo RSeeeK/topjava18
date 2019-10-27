@@ -20,6 +20,9 @@ import java.util.stream.Stream;
 public class MealsUtil {
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;
 
+    private MealsUtil() {
+    }
+
     public static List<MealTo> getTos(Collection<Meal> meals, int caloriesPerDay) {
         return getFiltered(meals, caloriesPerDay, meal -> true);
     }
