@@ -5,9 +5,14 @@
     </contextListener>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
+        <!--<encoder>
             <charset>UTF-8</charset>
             <pattern>%d{HH:mm:ss.SSS} %-5level %class{50}.%M:%L - %msg%n</pattern>
+        </encoder>
+        -->
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <charset>UTF-8</charset>
+            <layout class="ru.javawebinar.topjava.layouts.TestLogLayout" />
         </encoder>
     </appender>
 
