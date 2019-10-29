@@ -1,21 +1,13 @@
 package ru.javawebinar.topjava.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NamedQueries({
-        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET " +
-                "m.calories = :calories, " +
-                "m.dateTime = :dateTime, " +
-                "m.description = :description " +
-                "WHERE m.id = :id AND m.user=:user"),
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id = :id AND m.user = :user"),
-        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m WHERE m.id = :id AND m.user = :user"),
         @NamedQuery(name = Meal.GET_ALL, query = "SELECT m FROM Meal m WHERE m.user = :user ORDER BY m.dateTime DESC"),
         @NamedQuery(name = Meal.GET_BETWEEN, query = "SELECT m FROM Meal m WHERE m.dateTime between :startDate AND :endDate AND m.user = :user ORDER BY m.dateTime DESC")
 })
@@ -23,9 +15,7 @@ import java.time.LocalTime;
 @Table(name = "meals")
 public class Meal extends AbstractBaseEntity {
 
-    public static final String UPDATE = "Meal.update";
     public static final String DELETE = "Meal.delete";
-    public static final String GET = "Meal.get";
     public static final String GET_ALL = "Meal.getAll";
     public static final String GET_BETWEEN = "Meal.getBetween";
 
@@ -35,13 +25,16 @@ public class Meal extends AbstractBaseEntity {
 
     @Column(name = "description", nullable = false)
     @NotBlank
+    @Size(min = 2, max = 120, message = "Description must be between 2 and 120 characters")
     private String description;
 
     @Column(name = "calories", nullable = false)
-    @NotNull
+    @Min(value = 10, message = "Age should not be less than 10")
+    @Max(value = 5000, message = "Age should not be greater than 5000")
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     private User user;
 
     public Meal() {

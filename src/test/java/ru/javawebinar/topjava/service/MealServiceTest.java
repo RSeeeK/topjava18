@@ -2,8 +2,12 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.Stopwatch;
 import org.junit.rules.TestName;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -12,11 +16,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.logging.Logger;
+import java.util.concurrent.TimeUnit;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -34,36 +36,38 @@ public class MealServiceTest {
     public final ExpectedException thrown = ExpectedException.none();
 
     @Rule
-    public final TestName name = new TestName();
+    public final TestName description = new TestName();
 
-    @ClassRule
-    public static final TestLogger TEST_LOGGER = new TestLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(MealServiceTest.class);
 
-    private LocalDateTime start;
-    private LocalDateTime finish;
-    private static StringBuilder finalLog = new StringBuilder();
-
-    @Before
-    public void initTest() {
-        start = LocalDateTime.now();
+    private static void logInfo(Description description, String status, long nanos) {
+        String testName = description.getMethodName();
+        LOGGER.info(String.format("Test %s %s, spent %d ms",
+                testName, status, TimeUnit.NANOSECONDS.toMicros(nanos)));
     }
 
-    @After
-    public void finishTest() {
-        finish = LocalDateTime.now();
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void succeeded(long nanos, Description description) {
+            logInfo(description, "succeeded", nanos);
+        }
 
-        String message = "TEST "+name.getMethodName() + " DURATION (nanosec): " + Duration.between(start, finish).getNano();
-        finalLog.append(message);
-        finalLog.append("\n");
-        final Logger log = TEST_LOGGER.getLogger();
-        log.warning(message);
-    }
+        @Override
+        protected void failed(long nanos, Throwable e, Description description) {
+            logInfo(description, "failed", nanos);
+        }
 
-    @AfterClass
-    public static void finishAllTests() {
-        final Logger log = TEST_LOGGER.getLogger();
-        log.warning(finalLog.toString());
-    }
+        @Override
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            logInfo(description, "skipped", nanos);
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            logInfo(description, "finished", nanos);
+        }
+    };
 
     @Autowired
     private MealService service;
