@@ -6,8 +6,10 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -37,6 +39,22 @@ public class DateTimeUtil {
 
     public static LocalDateTime getEndExclusive(LocalDate localDate) {
         return startOfDay(localDate != null ? localDate.plus(1, ChronoUnit.DAYS) : MAX_DATE);
+    }
+
+    public static Date getStartDateInclusive(LocalDate dateToConvert) {
+        return (dateToConvert == null) ?
+                Date.from(MIN_DATE.atTime(LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant()) :
+                Date.from(dateToConvert.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date getEndDateExclusive(LocalDate dateToConvert) {
+        return (dateToConvert == null) ?
+                Date.from(MAX_DATE.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant()):
+                Date.from(dateToConvert.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date convertToDate(LocalDateTime dateToConvert) {
+        return Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     private static LocalDateTime startOfDay(LocalDate localDate) {

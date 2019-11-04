@@ -26,15 +26,6 @@
     </beans>
 
     <beans profile="postgres">
-        <!--
-            For postgres driver logging
-            It uses java.util.logging and logged via jul-to-slf4j bridge
-            https://stackoverflow.com/a/27296470/548473
-        -->
-        <bean class="org.springframework.beans.factory.config.MethodInvokingBean">
-            <property name="staticMethod" value="org.slf4j.bridge.SLF4JBridgeHandler.install" />
-        </bean>
-
         <context:property-placeholder location="classpath:db/postgres.properties" system-properties-mode="OVERRIDE"/>
 
         <bean id="dataSource"
@@ -43,6 +34,15 @@
               p:url="${database.url}"
               p:username="${database.username}"
               p:password="${database.password}"/>
+
+        <!--
+            For postgres driver logging
+            It uses java.util.logging and logged via jul-to-slf4j bridge
+            https://stackoverflow.com/a/27296470/548473
+        -->
+        <bean class="org.springframework.beans.factory.config.MethodInvokingBean">
+            <property name="staticMethod" value="org.slf4j.bridge.SLF4JBridgeHandler.install" />
+        </bean>
     </beans>
 
     <beans profile="jdbc">
