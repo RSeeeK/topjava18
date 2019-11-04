@@ -18,8 +18,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -40,59 +38,28 @@ public class MealServiceTest {
     @Rule
     public final TestName description = new TestName();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MealServiceTest.class);
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
 
-    private static final Map<String, Map<String, Long>> testResult = new ConcurrentHashMap<>();
+    private static final StringBuffer results = new StringBuffer();
 
     @Rule
+    // http://stackoverflow.com/questions/14892125/what-is-the-best-practice-to-determine-the-execution-time-of-the-bussiness-relev
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        protected void succeeded(long nanos, Description description) {
-            ConcurrentHashMap<String, Long> currentTestResult = new ConcurrentHashMap<>();
-            currentTestResult.put("succeeded", nanos);
-            testResult.put(description.getMethodName(), currentTestResult);
-        }
-
-        @Override
-        protected void failed(long nanos, Throwable e, Description description) {
-            ConcurrentHashMap<String, Long> currentTestResult = new ConcurrentHashMap<>();
-            currentTestResult.put("failed", nanos);
-            testResult.put(description.getMethodName(), currentTestResult);
-        }
-
-        @Override
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            ConcurrentHashMap<String, Long> currentTestResult = new ConcurrentHashMap<>();
-            currentTestResult.put("skipped", nanos);
-            testResult.put(description.getMethodName(), currentTestResult);
-        }
-
-        @Override
         protected void finished(long nanos, Description description) {
-            ConcurrentHashMap<String, Long> currentTestResult = new ConcurrentHashMap<>();
-            currentTestResult.put("finished", nanos);
-            testResult.put(description.getMethodName(), currentTestResult);
+            String result = String.format("\n%-25s %7d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            results.append(result);
+            log.info(result + " ms\n");
         }
-
     };
 
     @AfterClass
-    public static void showResult() {
-        LOGGER.info(" _________________________________________");
-        LOGGER.info("|               TEST RESULT:              |");
-        LOGGER.info("|_________________________________________|");
-        String format = "| %1$-15s | %2$-10s | %3$-8s |";
-        for (Map.Entry<String, Map<String, Long>> entry:
-                testResult.entrySet()){
-            for (Map.Entry<String, Long> innerEntry:
-                    entry.getValue().entrySet()){
-                LOGGER.info(String.format(format,
-                        entry.getKey(),
-                        innerEntry.getKey(),
-                        "" + TimeUnit.NANOSECONDS.toMillis(innerEntry.getValue()) + " ms"));
-            }
-        }
-        LOGGER.info("|_________________________________________|");
+    public static void printResult() {
+        log.info("\n---------------------------------" +
+                "\nTest                 Duration, ms" +
+                "\n---------------------------------" +
+                results +
+                "\n---------------------------------");
     }
 
     @Autowired
